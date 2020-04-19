@@ -1,0 +1,43 @@
+/* Created by Rezki Hadiansah */
+
+/* 1a. 78 film recommendation */
+select count(film_id) from film where fulltext @@ to_tsquery('astronaut');
+
+/* 1b. 52 film recommendation */
+select count(film_id) from film where rating ='R' and (replacement_cost <15 and
+replacement_cost >5);
+
+/* 1c. Jon Stephen was the selected staff with total amount
+ * 31,059.92 and handle 7304 payments */
+select staff_id, count(payment_id), sum(amount) from payment
+group by staff_id order by count(payment_id) desc;
+select first_name, last_name from staff where staff_id=2;
+
+/* 1d. The result can be seen from the table */
+select rating, avg(replacement_cost) from film group by rating;
+
+
+/* 1e. Eleanor Hunt, Karl Seal, Marion Snyder, Rhonda Kennedy,
+and Clara Shaw were the customers that should get the coupon*/
+select concat(cu.first_name,' ', cu.last_name) Full_Name,
+cu.email,sum(pa.amount) from customer cu
+join payment pa on pa.customer_id = cu.customer_id
+group by cu.customer_id
+order by sum(pa.amount) desc
+limit 5;
+
+/*1f. Total copies in every film on every store can be seen
+ *  in count colums */
+select inv.store_id, f.title, count(inv.film_id) from inventory inv
+join film f on f.film_id = inv.film_id
+group by inv.store_id,f.title
+order by count(inv.film_id) desc;
+
+
+/* 1g. Clara Shaw, Karl Seal, and Elanor Hunt are the selected Customers */
+select concat(cu.first_name,' ', cu.last_name) full_name, cu.email,
+count(pa.payment_id) from customer cu
+join payment pa on pa.customer_id = cu.customer_id
+group by cu.customer_id
+having count(pa.payment_id) >= 40;
+
